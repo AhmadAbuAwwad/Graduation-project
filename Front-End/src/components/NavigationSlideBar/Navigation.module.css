@@ -1,0 +1,69 @@
+*{
+    box-sizing: border-box;
+}
+
+.navContainer {
+  position: fixed;
+  top: 5.1rem;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  background-color: rgba(0, 0, 0, 0.57);
+  width: 100%;
+  height: 100%;
+}
+
+.navBar {
+  background-color: whitesmoke;
+  box-shadow: 2px;
+  width: 25%;
+  animation-name:navBarAnim;
+  animation-duration: 0.78s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ 
+}
+
+@keyframes navBarAnim {
+    from {width:0;}
+    to {width: 28%;}
+}
+
+.rightPage{
+    width: 72%;
+    height:100%;
+}
+
+.donateMecidne, .donateMoney, .searchForMedicine, .home{
+    padding: 1.2rem;
+    margin-bottom: 0.15rem;
+    border-width: 0.15rem;
+    border-color: rgb(157, 29, 29);
+    font-size: 1rem;
+    font-weight: bold;
+    direction: rtl;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    background-color:rgba(13, 131, 241, 0.133);
+}
+
+.donateMecidne:hover{
+    background-color:rgba(5, 151, 255, 0.474);
+}
+
+.donateMoney:hover{
+    background-color:rgba(5, 151, 255, 0.474);
+}
+
+.searchForMedicine:hover{
+    background-color:rgba(5, 151, 255, 0.474);
+}
+
+.home:hover{
+    background-color:rgba(5, 151, 255, 0.474); 
+}

@@ -1,0 +1,293 @@
+import Classes from "./MedcineDonation.module.css";
+import { Form, Input, ConfigProvider } from "antd";
+import { useNavigate } from "react-router-dom";
+import Header from "../Header/Header";
+import uploadImage from "./uploadImage.png";
+import { useState } from "react";
+import { useAuth } from "../../hooks/auth-context";
+import { toast, ToastContainer } from "react-toastify";
+
+const MedcineDonation = () => {
+  const [form] = Form.useForm();
+  const Navigate = useNavigate();
+  const [file, setFile] = useState(null);
+  const Auth = useAuth();
+
+  /**
+   * fisrtly true to disable the lowest part of the form
+   * then false based on the returned value from BE
+   */
+  const [disableState, setDisableState] = useState(true);
+
+  /**
+   * Add request for a medicine
+   * insert its data into the database and show it to the admin in the admin page to approve or denied
+   *
+   */
+
+  //test
+
+  /* const onFinish = async (values) => {
+        const response = await fetch(
+          "http://localhost:8080/api/mdw/DonateMedicine",
+          {
+            method: "POST",
+            body: JSON.stringify(values),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+    
+        if (!response.ok) {
+          const message = "An error has occured";
+          console.log(message);
+        }
+    
+        if(localStorage.getItem('role') === 0){
+          //Navigate('/adminPage');
+        }else{
+          Navigate('/');
+        }
+      };*/
+
+  const onFinish = async (values) => {
+    // check if the user is logged In
+    if (Auth.isLoggedIn) {
+      // Search case
+      if (disableState) {
+        console.log("before API", values.marketName);
+        const response = await fetch(
+          `http://localhost:8080/api/drugs/getDrugByName/${values.marketName}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const message = "An error has occured";
+          console.log(message);
+        }
+
+        const results = await response.json();
+        console.log(results);
+        // test 
+
+        /**
+         * 1. check if the result none or (there's no match) then display toast message to describe that
+         * 2. if there's or there's not then change disaple state and fill the fields
+         *
+         */
+      } else {
+        // add to the database case
+        console.log("before API", values);
+
+        /*
+      const Data={
+        email: Auth.user,
+        drug:{
+          drug_name:,
+          generic_name:,
+          dose_type:,
+          company:
+        },
+        expiration_date:,
+        production_date:
+      }*/
+/*
+        const response = await fetch(
+          `http://localhost:8080/api/drugs/getDrugByName/${values.marketName}`,
+          {
+            method: "POST",
+            body: JSON.stringify(Data),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const message = "An error has occured";
+          console.log(message);
+        }
+
+        const results = await response.json();
+        console.log(results);
+      }*/
+    }
+  } else {
+      /**
+       * The user is not logged in so display a toast message
+       * Then navigate to the loginPage
+       */
+
+      Navigate("/login");
+    }
+  };
+
+  const chooseImageHandler = (e) => {
+    setFile(URL.createObjectURL(e.target.files[0]));
+  };
+
+  return (
+    <div className={Classes.medicineDonationContainer}>
+      <Header />
+      <div className={Classes.pageBody}>
+        <div className={Classes.chooseImage}>
+          {file == null && (
+            <img src={uploadImage} className={Classes.imageIcon} />
+          )}
+          {file != null && <img src={file} className={Classes.imageIcon} />}
+          <input
+            type="file"
+            onChange={chooseImageHandler}
+            className={Classes.chooseInput}
+          />
+        </div>
+
+        <div className={Classes.formAction}>
+          <ConfigProvider direction="rtl">
+            <div className={Classes.formContainer}>
+              <ToastContainer />
+              <Form
+                name="basic"
+                form={form}
+                className={Classes.form}
+                onFinish={onFinish}
+                labelCol={{
+                  span: 6,
+                }}
+                wrapperCol={{
+                  span: 14,
+                }}
+                initialValues={{
+                  remember: true,
+                }}
+                autoComplete="off"
+                direction="rtl"
+              >
+                <Form.Item
+                  className={Classes.formItem}
+                  label="الإسم التجاري"
+                  name="marketName"
+                  rules={[
+                    {
+                      required: true,
+                      message: "الرجاء إدخال الإسم التجاري",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+
+                <Form.Item
+                  className={Classes.formItem}
+                  label="تاريخ الاصدار"
+                  name="releaseDate"
+                  rules={[
+                    {
+                      required: true,
+                      message: "الرجاء إدخال تاريخ الاصدار",
+                    },
+                  ]}
+                >
+                  <Input type="date" />
+                </Form.Item>
+
+                <Form.Item
+                  className={Classes.formItem}
+                  label="تاريخ الانتهاء"
+                  name="expirationDate"
+                  rules={[
+                    {
+                      required: true,
+                      message: "الرجاء إدخال تاريخ الانتهاء",
+                    },
+                  ]}
+                >
+                  <Input type="date" />
+                </Form.Item>
+
+                <Form.Item className={Classes.btn}>
+                  {disableState && (
+                    <button className={Classes.submitBtn} type="submit">
+                      {" "}
+                      بحث
+                    </button>
+                  )}
+                </Form.Item>
+                <Form.Item
+                  className={Classes.formItem}
+                  label="الإسم العلمي"
+                  name="scientificName"
+                  rules={[
+                    {
+                      required: false,
+                      message: "الرجاء إدخال الإسم العلمي",
+                    },
+                  ]}
+                >
+                  {disableState && <Input disabled />}
+                  {!disableState && <Input />}
+                </Form.Item>
+
+                <Form.Item
+                  className={Classes.formItem}
+                  name="wayToUse"
+                  label="طريقة أخذ الجرعة"
+                  rules={[
+                    {
+                      required: false,
+                      message: "الرجاء ملأ طريقة أخذ الجرعة",
+                    },
+                  ]}
+                >
+                  {disableState && <Input disabled />}
+                  {!disableState && <Input />}
+                </Form.Item>
+
+                <Form.Item
+                  className={Classes.formItem}
+                  label="اسم الشركة"
+                  name="companyName"
+                  rules={[
+                    {
+                      required: false,
+                      message: "الرجاء إدخال إسم الشركة",
+                    },
+                  ]}
+                >
+                  {disableState && <Input disabled />}
+                  {!disableState && <Input />}
+                </Form.Item>
+
+                <Form.Item className={Classes.btn}>
+                  {!disableState && (
+                    <button className={Classes.submitBtn} type="submit">
+                      حفظ
+                    </button>
+                  )}
+
+                  {disableState && (
+                    <button
+                      className={Classes.submitBtn}
+                      type="submit"
+                      disabled
+                    >
+                      حفظ
+                    </button>
+                  )}
+                </Form.Item>
+              </Form>
+            </div>
+          </ConfigProvider>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MedcineDonation;

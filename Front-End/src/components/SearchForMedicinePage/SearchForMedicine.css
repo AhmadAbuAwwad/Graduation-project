@@ -1,0 +1,15 @@
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.tableContainer{
+    width: 97%;
+    display: block;
+    margin-top: 8.5%;
+    
+}

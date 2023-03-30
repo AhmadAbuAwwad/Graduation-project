@@ -1,0 +1,13 @@
+.style{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 700px;
+    
+}
+
+.card{
+    width: 14%;
+}

@@ -1,0 +1,22 @@
+.form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 7.5vw;
+}
+
+p{
+    font-size: 25px;
+    margin-bottom: 6%;
+}
+
+.btn{
+    margin-top: 2rem;
+}
+
+.list{
+    position: relative;
+    width: 58%;
+    margin-bottom: 6%;
+}
